@@ -14,7 +14,7 @@ locals {
   tags = {
     terraform : true,
     example : true,
-    purpose : Corelight
+    purpose : "Corelight"
   }
 }
 
@@ -47,7 +47,7 @@ module "enrichment_iam" {
   source = "../../modules/iam"
 
   providers = {
-    "aws" = aws.primary
+    aws = aws.primary
   }
 
   cloudwatch_log_group_arn = module.enrichment_main.cloudwatch_log_group_arn
@@ -62,7 +62,7 @@ module "enrichment_main" {
   source = "../../modules/enrichment"
 
   providers = {
-    "aws" = aws.primary
+    aws = aws.primary
   }
 
   corelight_cloud_enrichment_image     = local.image_name

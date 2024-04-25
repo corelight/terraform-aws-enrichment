@@ -1,8 +1,7 @@
 variable "lambda_iam_role_name" {
   type        = string
   default     = "corelight-cloud-enrichment-lambda-role"
-  description = "the name of the IAM role used to grant the cloud enrichment" +
-  "lambda permission to enumerate cloud resources and write results to the bucket"
+  description = "the name of the IAM role used to grant the cloud enrichment lambda permission to enumerate cloud resources and write results to the bucket"
 }
 
 variable "lambda_iam_policy_name" {
