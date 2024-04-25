@@ -71,6 +71,7 @@ module "enrichment_main" {
   enrichment_bucket_name               = aws_s3_bucket.enrichment_bucket.bucket
   enrichment_bucket_region             = aws_s3_bucket.enrichment_bucket.region
   lambda_iam_role_arn                  = module.enrichment_iam.lambda_role_arn
+  scheduled_sync_regions               = local.regions_used
 
   tags = local.tags
 }
