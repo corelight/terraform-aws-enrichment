@@ -17,7 +17,9 @@ locals {
     purpose : "Corelight"
   }
 }
-
+####################################################################################################
+# Create the bucket where all data will be stored
+####################################################################################################
 provider "aws" {
   alias  = "primary"
   region = "us-east-1"
@@ -43,6 +45,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "enrichment_bucket
   }
 }
 
+####################################################################################################
+# Provision the IAM roles for the lambda, the cross region event bridge rules, and the
+# Corelight sensor
+####################################################################################################
 module "enrichment_iam" {
   source = "../../modules/iam"
 
@@ -58,6 +64,9 @@ module "enrichment_iam" {
   tags = local.tags
 }
 
+####################################################################################################
+# Deploy the lambda and supporting event bridge bus and rules for the primary region
+####################################################################################################
 module "enrichment_main" {
   source = "../../modules/enrichment"
 
@@ -76,8 +85,10 @@ module "enrichment_main" {
   tags = local.tags
 }
 
+####################################################################################################
+# Setup providers and deploy the "Fan In"
+####################################################################################################
 
-# Secondary Regions
 provider "aws" {
   alias  = "us-east-2"
   region = "us-east-2"
@@ -100,7 +111,7 @@ module "secondary_eventbridge_rule_us-east-2" {
 
 provider "aws" {
   alias  = "us-west-1"
-  region = "us-west-2"
+  region = "us-west-1"
 }
 
 module "secondary_eventbridge_rule_us-west-1" {
