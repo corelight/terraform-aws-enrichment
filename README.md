@@ -23,7 +23,7 @@ ECR_REGISTRY="${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 
 # Pull from Dockerhub
 CORELIGHT_REPO=corelight
-CORELIGHT_IMAGE_NAME=aws-cloud-enrichment
+CORELIGHT_IMAGE_NAME=sensor-enrichment-aws
 CORELIGHT_IMAGE_TAG=1.0.0
 
 SRC_IMAGE="$CORELIGHT_REPO/$CORELIGHT_IMAGE_NAME:$CORELIGHT_IMAGE_TAG"
@@ -35,7 +35,7 @@ docker pull $SRC_IMAGE
 # Login to ECR
 aws ecr get-login-password --region $AWS_REGION | docker login \
     --username AWS \
-    --password-stdin $ECR_REPO
+    --password-stdin $ECR_REGISTRY
 
 # Copy Image to ECR
 skopeo copy docker://$SRC_IMAGE docker://$DST_IMAGE --dest-tls-verify
