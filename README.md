@@ -1,13 +1,10 @@
 # terraform-aws-enrichment
+<img src="docs/overview.svg" alt="overview">
 
 ## Getting Started
 Corelight's AWS Cloud Enrichment requires the deployment of a lambda and its
 supporting infrastructure to ensure the data in your Corelight cloud sensors are
-always up-to-date with the latest state of your cloud resources. 
-
-Collection of pertinent cloud resource data is done in two ways: scheduled and 
-event driven. These two methods work together to ensure your data is as near 
-real-time as possible.
+always up-to-date with the latest state of your cloud resources.
 
 ### Preparation
 Image based Lambdas must be deployed from a private Elastic Container Registry (ECR) 
@@ -41,11 +38,10 @@ aws ecr get-login-password --region $AWS_REGION | docker login \
 skopeo copy docker://$SRC_IMAGE docker://$DST_IMAGE --dest-tls-verify
 ```
 
-The variables for this module all have default values that can be overwritten 
-to meet your naming and compliance standards. The only exception is the 
-`corelight_cloud_enrichment_image`. 
-
 ### Deployment
+The variables for this module all have default values that can be overwritten
+to meet your naming and compliance standards. The only variables without defaults are
+the Lambda's ECR image name and tag which you will set during preparation.
 
-Deploying examples can be found [here](examples)
+Deployment examples can be found [here](examples)
 
