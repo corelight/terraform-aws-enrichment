@@ -45,3 +45,8 @@ the Lambda's ECR image name and tag which you will set during preparation.
 
 Deployment examples can be found [here](examples)
 
+## License
+
+The project is licensed under the [MIT][] license.
+
+[MIT]: LICENSE
