@@ -1,7 +1,7 @@
 resource "aws_iam_role" "cross_region" {
-  name               = var.cross_region_event_bus_role_name
+  name = var.cross_region_event_bus_role_name
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
@@ -19,9 +19,9 @@ resource "aws_iam_role" "cross_region" {
 }
 
 resource "aws_iam_policy" "event_bus_put_events_on_central_bus" {
-  name   = var.cross_region_event_bus_policy_name
+  name = var.cross_region_event_bus_policy_name
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [

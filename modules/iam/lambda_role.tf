@@ -2,7 +2,7 @@ resource "aws_iam_role" "lambda_role" {
   name = var.lambda_iam_role_name
 
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = "sts:AssumeRole"
@@ -18,9 +18,9 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_policy" "lambda_access_policy" {
-  name   = var.lambda_iam_policy_name
+  name = var.lambda_iam_policy_name
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
@@ -47,7 +47,7 @@ resource "aws_iam_policy" "lambda_access_policy" {
           "s3:ListObjects",
           "s3:DeleteObject"
         ]
-        Effect   = "Allow"
+        Effect = "Allow"
         Resource = [
           var.enrichment_bucket_arn,
           "${var.enrichment_bucket_arn}/*"

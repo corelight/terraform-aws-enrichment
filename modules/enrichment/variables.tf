@@ -81,7 +81,7 @@ variable "ec2_state_change_rule_name" {
 }
 
 variable "scheduled_sync_regions" {
-  type    = list(string)
+  type = list(string)
   default = [
     "us-east-1",
     "us-east-2",
@@ -107,5 +107,5 @@ variable "scheduled_sync_regions" {
 variable "tags" {
   type        = object({})
   description = "Any tags that should be applied to resources deployed by the module"
-  default = {}
+  default     = {}
 }

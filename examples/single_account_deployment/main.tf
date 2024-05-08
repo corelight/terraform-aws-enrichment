@@ -4,7 +4,7 @@ locals {
   image_name              = "12345.dkr.ecr.us-east-1.amazonaws.com/sensor-enrichment-aws"
   image_tag               = "latest"
   secondary_rule_name     = "corelight-ec2-state-change"
-  regions_used            = [
+  regions_used = [
     "us-east-1",
     "us-east-2",
     "us-west-1",
