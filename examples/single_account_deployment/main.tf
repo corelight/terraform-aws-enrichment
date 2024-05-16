@@ -1,8 +1,8 @@
 locals {
   bucket_name             = "corelight-enrichment"
-  enrichment_ecr_repo_arn = "arn:aws:ecr:us-east-1:12345:repository/aws-cloud-enrichment"
-  image_name              = "12345.dkr.ecr.us-east-1.amazonaws.com/aws-cloud-enrichment"
-  image_tag               = "1.0.0"
+  enrichment_ecr_repo_arn = "arn:aws:ecr:us-east-1:12345:repository/sensor-enrichment-aws"
+  image_name              = "12345.dkr.ecr.us-east-1.amazonaws.com/sensor-enrichment-aws"
+  image_tag               = "latest"
   secondary_rule_name     = "corelight-ec2-state-change"
   regions_used            = [
     "us-east-1",
