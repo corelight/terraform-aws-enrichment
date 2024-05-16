@@ -52,7 +52,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "enrichment_bucket
 # Corelight sensor
 ####################################################################################################
 module "enrichment_iam" {
-  source = "../../modules/iam"
+  source = "../../modules/enrichment_iam"
 
   providers = {
     aws = aws.primary

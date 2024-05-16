@@ -1,7 +1,7 @@
 resource "aws_iam_role" "corelight_sensor_role" {
-  name               = var.corelight_sensor_role_name
+  name = var.corelight_sensor_role_name
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
@@ -20,16 +20,16 @@ resource "aws_iam_role" "corelight_sensor_role" {
 }
 
 resource "aws_iam_policy" "corelight_sensor_policy" {
-  name   = var.corelight_sensor_policy_name
+  name = var.corelight_sensor_policy_name
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
           "s3:GetObject",
           "s3:ListBucket"
         ]
-        Effect   = "Allow"
+        Effect = "Allow"
         Resource = [
           var.enrichment_bucket_arn,
           "${var.enrichment_bucket_arn}/*"

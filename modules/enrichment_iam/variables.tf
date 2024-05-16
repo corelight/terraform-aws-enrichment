@@ -57,5 +57,5 @@ variable "corelight_sensor_policy_name" {
 variable "tags" {
   type        = object({})
   description = "Any tags that should be applied to resources deployed by the module"
-  default = {}
+  default     = {}
 }

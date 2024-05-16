@@ -1,17 +1,21 @@
 # terraform-aws-enrichment
+
 <img src="docs/overview.svg" alt="overview">
 
 ## Getting Started
+
 Corelight's AWS Cloud Enrichment requires the deployment of a lambda and its
 supporting infrastructure to ensure the data in your Corelight cloud sensors are
 always up-to-date with the latest state of your cloud resources.
 
 ### Preparation
+
 Image based Lambdas must be deployed from a private Elastic Container Registry (ECR) 
 repository and therefore the data collection serverless container image provided by 
 Corelight must be copied from Dockerhub and pushed to your own ECR repository.
 
 #### Copying the Corelight image
+
 Corelight recommends install [skopeo](https://github.com/containers/skopeo/blob/main/install.md) to assist with copying this image.
 ```bash
 AWS_ACCOUNT=<enter aws account id>
@@ -39,6 +43,7 @@ skopeo copy docker://$SRC_IMAGE docker://$DST_IMAGE --dest-tls-verify
 ```
 
 ### Deployment
+
 The variables for this module all have default values that can be overwritten
 to meet your naming and compliance standards. The only variables without defaults are
 the Lambda's ECR image name and tag which you will set during preparation.
