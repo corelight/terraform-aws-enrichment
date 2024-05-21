@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "log_group" {
 
 resource "aws_lambda_function" "enrichment_lambda" {
   function_name = var.lambda_name
-  role          = var.lambda_iam_role_arn
+  role          = aws_iam_role.lambda_role.arn
   image_uri     = "${var.corelight_cloud_enrichment_image}:${var.corelight_cloud_enrichment_image_tag}"
   package_type  = "Image"
   timeout       = var.lambda_timeout

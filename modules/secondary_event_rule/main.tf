@@ -15,5 +15,5 @@ resource "aws_cloudwatch_event_rule" "ec2_state_change_secondary_region_rule" {
 resource "aws_cloudwatch_event_target" "primary_bus_target" {
   rule     = aws_cloudwatch_event_rule.ec2_state_change_secondary_region_rule.name
   arn      = var.primary_event_bus_arn
-  role_arn = var.cross_region_iam_role_arn
+  role_arn = var.cross_region_eventbridge_role_arn
 }

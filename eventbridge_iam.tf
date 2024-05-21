@@ -28,7 +28,7 @@ resource "aws_iam_policy" "event_bus_put_events_on_central_bus" {
           "events:PutEvents"
         ]
         Effect   = "Allow"
-        Resource = [var.primary_bus_arn]
+        Resource = [aws_cloudwatch_event_bus.primary_bus.arn]
       }
     ]
   })
@@ -38,5 +38,5 @@ resource "aws_iam_policy" "event_bus_put_events_on_central_bus" {
 
 resource "aws_iam_role_policy_attachment" "cross_region_role_attach" {
   policy_arn = aws_iam_policy.event_bus_put_events_on_central_bus.arn
-  role       = aws_iam_role.cross_region.id
+  role       = aws_iam_role.cross_region.name
 }
