@@ -11,7 +11,7 @@ variable "corelight_sensor_role_name" {
 }
 
 variable "corelight_sensor_policy_name" {
-  description = ""
+  description = "Name of the policy used by the Corelight sensor"
   type        = string
   default     = "corelight-sensor-cloud-enrichment-policy"
 }
