@@ -38,7 +38,7 @@ resource "aws_iam_policy" "lambda_access_policy" {
           "logs:PutLogEvents"
         ]
         Effect   = "Allow"
-        Resource = aws_cloudwatch_log_group.log_group.arn
+        Resource = "${aws_cloudwatch_log_group.log_group.arn}:*"
       },
       {
         Action = [
