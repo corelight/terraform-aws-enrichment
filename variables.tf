@@ -1,5 +1,5 @@
 variable "corelight_cloud_enrichment_image" {
-  description = "The ECR image of https://hub.docker.com/r/corelight/sensor-enrichment-aws"
+  description = "The ECR image copy of https://hub.docker.com/r/corelight/sensor-enrichment-aws"
   type        = string
 }
 
@@ -9,22 +9,7 @@ variable "corelight_cloud_enrichment_image_tag" {
 }
 
 variable "enrichment_bucket_name" {
-  description = "Lambda ENV: the name of the enrichment bucket"
-  type        = string
-}
-
-variable "enrichment_bucket_region" {
-  description = "Lambda ENV: the region the enrichment bucket is located in"
-  type        = string
-}
-
-variable "enrichment_bucket_arn" {
-  description = "ARN of the enrichment bucket used in the Lambda IAM Policy"
-  type        = string
-}
-
-variable "ecr_repository_arn" {
-  description = "ARN of the ECR repository used in the Lambda IAM Policy"
+  description = "The name of the enrichment bucket"
   type        = string
 }
 
@@ -87,6 +72,12 @@ variable "primary_event_bus_name" {
   description = "The name of the event bus used to notify the Lambda of state changes"
   type        = string
   default     = "corelight-primary-event-bus"
+}
+
+variable "cloudwatch_log_group_prefix" {
+  description = "The cloudwatch string prepended to the cloud watch log group name"
+  type        = string
+  default     = "/aws/lambda"
 }
 
 variable "cloudwatch_log_group_retention" {

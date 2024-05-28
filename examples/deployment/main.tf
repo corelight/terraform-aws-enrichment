@@ -1,9 +1,8 @@
 locals {
-  bucket_name             = "corelight-enrichment"
-  enrichment_ecr_repo_arn = "arn:aws:ecr:us-east-1:12345:repository/sensor-enrichment-aws"
-  image_name              = "12345.dkr.ecr.us-east-1.amazonaws.com/sensor-enrichment-aws"
-  image_tag               = "latest"
-  secondary_rule_name     = "corelight-ec2-state-change"
+  bucket_name         = "corelight-enrichment"
+  image_name          = "12345.dkr.ecr.us-east-1.amazonaws.com/corelight-sensor-enrichment-aws"
+  image_tag           = "0.1.0"
+  secondary_rule_name = "corelight-ec2-state-change"
   my_regions = [
     "us-east-1",
     "us-east-2",
@@ -17,7 +16,6 @@ locals {
     purpose : "Corelight"
   }
 }
-
 
 ####################################################################################################
 # Create the bucket where all enrichment data will be stored
@@ -61,9 +59,6 @@ module "enrichment" {
   corelight_cloud_enrichment_image     = local.image_name
   corelight_cloud_enrichment_image_tag = local.image_tag
   enrichment_bucket_name               = aws_s3_bucket.enrichment_bucket.bucket
-  enrichment_bucket_region             = aws_s3_bucket.enrichment_bucket.region
-  enrichment_bucket_arn                = aws_s3_bucket.enrichment_bucket.arn
-  ecr_repository_arn                   = local.enrichment_ecr_repo_arn
   scheduled_sync_regions               = local.my_regions
 
   tags = local.tags
@@ -87,7 +82,6 @@ resource "aws_iam_instance_profile" "corelight_sensor" {
 
   tags = local.tags
 }
-
 
 ####################################################################################################
 # Setup providers and deploy the "Fan In" event bus resources in each secondary region
