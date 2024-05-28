@@ -49,8 +49,8 @@ resource "aws_iam_policy" "lambda_access_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          var.enrichment_bucket_arn,
-          "${var.enrichment_bucket_arn}/*"
+          data.aws_s3_bucket.enrichment_bucket.arn,
+          "${data.aws_s3_bucket.enrichment_bucket.arn}/*"
         ]
       },
       {
@@ -59,7 +59,7 @@ resource "aws_iam_policy" "lambda_access_policy" {
           "ecr:GetDownloadUrlForLayer"
         ]
         Effect   = "Allow"
-        Resource = var.ecr_repository_arn
+        Resource = data.aws_ecr_repository.enrichment_repo.arn
       }
 
     ]
