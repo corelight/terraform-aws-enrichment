@@ -78,7 +78,7 @@ module "sensor_iam" {
 
 resource "aws_iam_instance_profile" "corelight_sensor" {
   name = "corelight-sensor-profile"
-  role = module.sensor_iam.sensor_role_arn
+  role = module.sensor_iam.sensor_role_name
 
   tags = local.tags
 }
