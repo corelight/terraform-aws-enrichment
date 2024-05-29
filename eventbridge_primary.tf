@@ -14,7 +14,7 @@ resource "aws_cloudwatch_event_bus" "primary_bus" {
 resource "aws_cloudwatch_event_rule" "ec2_state_change_primary_rule" {
   name           = var.ec2_state_change_rule_name
   event_bus_name = aws_cloudwatch_event_bus.primary_bus.name
-  event_pattern = jsonencode({
+  event_pattern  = jsonencode({
     "source" : local.event_source,
     "detail-type" : local.event_detail_type,
     "detail" : {
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_event_target" "ec2_state_change_rule_lambda_target" {
 
 resource "aws_lambda_permission" "ec2_state_change_event_bridge_trigger_permission" {
   action        = "lambda:InvokeFunction"
-  function_name = var.lambda_name
+  function_name = aws_lambda_function.enrichment_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.ec2_state_change_primary_rule.arn
 }
