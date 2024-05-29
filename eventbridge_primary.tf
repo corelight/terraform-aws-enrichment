@@ -33,7 +33,7 @@ resource "aws_cloudwatch_event_target" "ec2_state_change_rule_lambda_target" {
 
 resource "aws_lambda_permission" "ec2_state_change_event_bridge_trigger_permission" {
   action        = "lambda:InvokeFunction"
-  function_name = var.lambda_name
+  function_name = aws_lambda_function.enrichment_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.ec2_state_change_primary_rule.arn
 }
