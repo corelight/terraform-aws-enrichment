@@ -15,7 +15,7 @@ variable "cross_region_eventbridge_role_arn" {
 
 ### Variables with Defaults
 variable "tags" {
-  description = "Any tags that should be applied to resources deployed by the module"
+  description = "(optional) Any tags that should be applied to resources deployed by the module"
   type        = object({})
   default     = {}
 }
