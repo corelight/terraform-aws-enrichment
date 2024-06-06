@@ -3,24 +3,31 @@
 <img src="docs/overview.svg" alt="overview">
 
 ## Usage
-```terraform
 
+```terraform
 module "enrichment" {
   source = "github.com/corelight/terraform-aws-enrichment"
 
   corelight_cloud_enrichment_image = "123456789111.dkr.ecr.us-east-1.amazonaws.com/corelight-sensor-enrichment-aws"
   corelight_cloud_enrichment_image_tag = "0.1.0"
   enrichment_bucket_name = "corelight-enrichment"
+
+  tags = {
+    terraform : true,
+    example : true,
+    purpose : "Corelight"
+  }
 }
 ```
 
 ## Preparation
 
-Image based Lambdas must be deployed from a private Elastic Container Registry (ECR) 
-repository and therefore the data collection serverless container image provided by 
+Image based Lambdas must be deployed from a private Elastic Container Registry (ECR)
+repository and therefore the data collection serverless container image provided by
 Corelight must be copied from Dockerhub and pushed to your own ECR repository.
 
 #### Copying the Corelight image
+
 Log into the destination ECR
 
 ```bash
@@ -49,7 +56,7 @@ docker pull $SRC_IMAGE
 # Copy Image to ECR
 skopeo copy docker://$SRC_IMAGE docker://$DST_IMAGE --dest-tls-verify
 ```
-If you would prefer not to use Skopeo then the image will need to be pulled, tagged, and pushed 
+If you would prefer not to use Skopeo then the image will need to be pulled, tagged, and pushed
 to ECR manually.
 
 ```bash
