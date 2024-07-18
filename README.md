@@ -5,19 +5,45 @@
 ## Usage
 
 ```terraform
+resource "aws_s3_bucket" "enrichment_bucket" {
+  bucket = "corelight-enrichment"
+}
+
+module "enrichment_eventbridge_role" {
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/eventbridge"
+
+  primary_event_bus_arn = module.enrichment.primary_event_bus_arn
+}
+
+module "enrichment_lambda_role" {
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/lambda"
+
+  enrichment_bucket_arn           = aws_s3_bucket.enrichment_bucket.arn
+  enrichment_ecr_repository_arn   = data.aws_ecr_repository.enrichment_repo.arn
+  lambda_cloudwatch_log_group_arn = module.enrichment.cloudwatch_log_group_arn
+}
+
 module "enrichment" {
   source = "github.com/corelight/terraform-aws-enrichment"
 
   corelight_cloud_enrichment_image = "123456789111.dkr.ecr.us-east-1.amazonaws.com/corelight-sensor-enrichment-aws"
   corelight_cloud_enrichment_image_tag = "0.1.0"
-  enrichment_bucket_name = "corelight-enrichment"
-
-  tags = {
-    terraform : true,
-    example : true,
-    purpose : "Corelight"
-  }
+  enrichment_bucket_name = aws_s3_bucket.enrichment_bucket.bucket
+  eventbridge_iam_cross_region_role_arn = module.enrichment_eventbridge_role.cross_region_role_arn
+  lambda_iam_role_arn                   = module.enrichment_lambda_role.lambda_iam_role_arn
 }
+
+# Used in tandem with the Corelight Sensor Module: https://github.com/corelight/terraform-aws-sensor
+module "enrichment_sensor_role" {
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/sensor"
+  enrichment_bucket_arn = aws_s3_bucket.enrichment_bucket.arn
+}
+
+resource "aws_iam_instance_profile" "corelight_sensor" {
+  name = "corelight-sensor-profile"
+  role = module.enrichment_sensor_role.sensor_role_name
+}
+
 ```
 
 ## Preparation
