@@ -28,7 +28,7 @@ resource "aws_iam_policy" "event_bus_put_events_on_central_bus" {
           "events:PutEvents"
         ]
         Effect   = "Allow"
-        Resource = [aws_cloudwatch_event_bus.primary_bus.arn]
+        Resource = [var.primary_event_bus_arn]
       }
     ]
   })
