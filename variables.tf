@@ -13,31 +13,17 @@ variable "enrichment_bucket_name" {
   type        = string
 }
 
-### Variables with Defaults
-variable "cross_region_event_bus_policy_name" {
-  description = "Name of the Corelight Event Bus"
+variable "lambda_iam_role_arn" {
+  description = "ARN of the IAM role deployed with the `modules/iam/lambda` sub-module"
   type        = string
-  default     = "corelight-primary-event-bus-policy"
 }
 
-variable "cross_region_event_bus_role_name" {
-  description = "Name of the IAM Role granting "
+variable "eventbridge_iam_cross_region_role_arn" {
+  description = "ARN of the IAM role deploy with the `modules/iam/eventbridge` sub-module"
   type        = string
-  default     = "corelight-cross-region-event-role"
 }
 
-variable "lambda_iam_role_name" {
-  description = "Name of the IAM role used to grant the cloud enrichment lambda permission to enumerate cloud resources and write results to the bucket"
-  type        = string
-  default     = "corelight-cloud-enrichment-lambda-role"
-}
-
-variable "lambda_iam_policy_name" {
-  description = "Name of the Lambda IAM policy"
-  type        = string
-  default     = "corelight-cloud-enrichment-lambda-policy"
-}
-
+# Variables with defaults
 variable "lambda_name" {
   description = "Name of the Corelight Lambda used to collect and maintain the bucket"
   type        = string

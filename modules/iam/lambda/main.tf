@@ -33,12 +33,11 @@ resource "aws_iam_policy" "lambda_access_policy" {
       },
       {
         Action = [
-          "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
         Effect   = "Allow"
-        Resource = "${aws_cloudwatch_log_group.log_group.arn}:*"
+        Resource = "${var.lambda_cloudwatch_log_group_arn}:*"
       },
       {
         Action = [
@@ -49,8 +48,8 @@ resource "aws_iam_policy" "lambda_access_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          data.aws_s3_bucket.enrichment_bucket.arn,
-          "${data.aws_s3_bucket.enrichment_bucket.arn}/*"
+          var.enrichment_bucket_arn,
+          "${var.enrichment_bucket_arn}/*"
         ]
       },
       {
@@ -59,7 +58,7 @@ resource "aws_iam_policy" "lambda_access_policy" {
           "ecr:GetDownloadUrlForLayer"
         ]
         Effect   = "Allow"
-        Resource = data.aws_ecr_repository.enrichment_repo.arn
+        Resource = var.enrichment_ecr_repository_arn
       }
 
     ]

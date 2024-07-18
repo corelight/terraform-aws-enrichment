@@ -49,6 +49,28 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "enrichment_bucket
 # Deploy the lambda and supporting resources for the primary region
 # Replace relative source with "source = github.com/corelight/terraform-aws-enrichment"
 ####################################################################################################
+data "aws_ecr_repository" "enrichment_repo" {
+  name = split("/", local.image_name)[1]
+}
+
+module "enrichment_eventbridge_role" {
+  source = "../../modules/iam/eventbridge"
+
+  primary_event_bus_arn = module.enrichment.primary_event_bus_arn
+
+  tags = local.tags
+}
+
+module "enrichment_lambda_role" {
+  source = "../../modules/iam/lambda"
+
+  enrichment_bucket_arn           = aws_s3_bucket.enrichment_bucket.arn
+  enrichment_ecr_repository_arn   = data.aws_ecr_repository.enrichment_repo.arn
+  lambda_cloudwatch_log_group_arn = module.enrichment.cloudwatch_log_group_arn
+
+  tags = local.tags
+}
+
 module "enrichment" {
   source = "../.."
 
@@ -56,10 +78,12 @@ module "enrichment" {
     aws = aws.primary
   }
 
-  corelight_cloud_enrichment_image     = local.image_name
-  corelight_cloud_enrichment_image_tag = local.image_tag
-  enrichment_bucket_name               = aws_s3_bucket.enrichment_bucket.bucket
-  scheduled_sync_regions               = local.my_regions
+  corelight_cloud_enrichment_image      = local.image_name
+  corelight_cloud_enrichment_image_tag  = local.image_tag
+  enrichment_bucket_name                = aws_s3_bucket.enrichment_bucket.bucket
+  scheduled_sync_regions                = local.my_regions
+  eventbridge_iam_cross_region_role_arn = module.enrichment_eventbridge_role.cross_region_role_arn
+  lambda_iam_role_arn                   = module.enrichment_lambda_role.lambda_iam_role_arn
 
   tags = local.tags
 }
@@ -69,7 +93,7 @@ module "enrichment" {
 ####################################################################################################
 
 module "sensor_iam" {
-  source = "../../modules/sensor_iam"
+  source = "../../modules/iam/sensor"
 
   enrichment_bucket_arn = aws_s3_bucket.enrichment_bucket.arn
 
@@ -100,7 +124,7 @@ module "secondary_eventbridge_rule_us-east-2" {
     aws = aws.us-east-2
   }
 
-  cross_region_eventbridge_role_arn    = module.enrichment.cross_region_iam_role_arn
+  cross_region_eventbridge_role_arn    = module.enrichment_eventbridge_role.cross_region_role_arn
   primary_event_bus_arn                = module.enrichment.primary_event_bus_arn
   secondary_ec2_state_change_rule_name = "${local.secondary_rule_name}-us-east-2"
 
@@ -119,7 +143,7 @@ module "secondary_eventbridge_rule_us-west-1" {
     aws = aws.us-west-1
   }
 
-  cross_region_eventbridge_role_arn    = module.enrichment.cross_region_iam_role_arn
+  cross_region_eventbridge_role_arn    = module.enrichment_eventbridge_role.cross_region_role_arn
   primary_event_bus_arn                = module.enrichment.primary_event_bus_arn
   secondary_ec2_state_change_rule_name = "${local.secondary_rule_name}-us-west-1"
 
@@ -138,7 +162,7 @@ module "secondary_eventbridge_rule_us-west-2" {
     aws = aws.us-west-2
   }
 
-  cross_region_eventbridge_role_arn    = module.enrichment.cross_region_iam_role_arn
+  cross_region_eventbridge_role_arn    = module.enrichment_eventbridge_role.cross_region_role_arn
   primary_event_bus_arn                = module.enrichment.primary_event_bus_arn
   secondary_ec2_state_change_rule_name = "${local.secondary_rule_name}-us-west-2"
 
