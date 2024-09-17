@@ -1,8 +1,14 @@
 locals {
-  bucket_name         = "corelight-enrichment"
-  image_name          = "12345.dkr.ecr.us-east-1.amazonaws.com/corelight-sensor-enrichment-aws"
-  image_tag           = "0.1.0"
-  secondary_rule_name = "corelight-ec2-state-change"
+  bucket_name              = "corelight-enrichment"
+  image_name               = "12345.dkr.ecr.us-east-1.amazonaws.com/corelight/sensor-enrichment-aws"
+  image_tag                = "0.1.1"
+  secondary_rule_name      = "corelight-ec2-state-change"
+  vpc_id                   = "<vpc where resources are deployed>"
+  monitoring_subnet        = "<monitoring subnet id>"
+  management_subnet        = "<management subnet id>"
+  sensor_ssh_key_pair_name = "<name of the ssh key in AWS used to access the sensor EC2 instances>"
+  sensor_ami_id            = "<sensor ami id from Corelight>"
+  license_key_file         = "/path/to/license.txt"
   my_regions = [
     "us-east-1",
     "us-east-2",
@@ -47,14 +53,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "enrichment_bucket
 
 ####################################################################################################
 # Deploy the lambda and supporting resources for the primary region
-# Replace relative source with "source = github.com/corelight/terraform-aws-enrichment"
 ####################################################################################################
 data "aws_ecr_repository" "enrichment_repo" {
-  name = split("/", local.image_name)[1]
+  name = "corelight/sensor-enrichment-aws"
 }
 
 module "enrichment_eventbridge_role" {
-  source = "../../modules/iam/eventbridge"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/eventbridge"
 
   primary_event_bus_arn = module.enrichment.primary_event_bus_arn
 
@@ -62,7 +67,7 @@ module "enrichment_eventbridge_role" {
 }
 
 module "enrichment_lambda_role" {
-  source = "../../modules/iam/lambda"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/lambda"
 
   enrichment_bucket_arn           = aws_s3_bucket.enrichment_bucket.arn
   enrichment_ecr_repository_arn   = data.aws_ecr_repository.enrichment_repo.arn
@@ -72,7 +77,7 @@ module "enrichment_lambda_role" {
 }
 
 module "enrichment" {
-  source = "../.."
+  source = "github.com/corelight/terraform-aws-enrichment"
 
   providers = {
     aws = aws.primary
@@ -89,11 +94,47 @@ module "enrichment" {
 }
 
 ####################################################################################################
-# Assign Corelight sensor auto-scale group permission to read from the bucket
+# Deploy Corelight sensor and assign autoscaling group permission to read from the bucket
 ####################################################################################################
 
+data "aws_subnet" "management" {
+  id = local.management_subnet
+}
+
+module "asg_lambda_role" {
+  source = "github.com/corelight/terraform-aws-sensor//modules/iam/lambda"
+
+  lambda_cloudwatch_log_group_arn = module.sensor.cloudwatch_log_group_arn
+  security_group_arn              = module.sensor.management_security_group_arn
+  sensor_autoscaling_group_name   = module.sensor.autoscaling_group_name
+  subnet_arn                      = data.aws_subnet.management.arn
+
+  tags = local.tags
+}
+
+module "sensor" {
+  source = "github.com/corelight/terraform-aws-sensor"
+
+  auto_scaling_availability_zones = ["us-east-1a"]
+  aws_key_pair_name               = local.sensor_ssh_key_pair_name
+  corelight_sensor_ami_id         = local.sensor_ami_id
+  license_key                     = file(local.license_key_file)
+  management_subnet_id            = local.management_subnet
+  monitoring_subnet_id            = local.monitoring_subnet
+  community_string                = "<password for the sensor api>"
+  vpc_id                          = local.vpc_id
+  asg_lambda_iam_role_arn         = module.asg_lambda_role.role_arn
+
+  # Setting these will automatically configure cloud enrichment
+  enrichment_bucket_name          = aws_s3_bucket.enrichment_bucket.id
+  enrichment_bucket_region        = aws_s3_bucket.enrichment_bucket.region
+  enrichment_instance_profile_arn = aws_iam_instance_profile.corelight_sensor.arn
+
+  tags = local.tags
+}
+
 module "sensor_iam" {
-  source = "../../modules/iam/sensor"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/iam/sensor"
 
   enrichment_bucket_arn = aws_s3_bucket.enrichment_bucket.arn
 
@@ -118,7 +159,7 @@ provider "aws" {
 
 
 module "secondary_eventbridge_rule_us-east-2" {
-  source = "../../modules/secondary_event_rule"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/secondary_event_rule"
 
   providers = {
     aws = aws.us-east-2
@@ -137,7 +178,7 @@ provider "aws" {
 }
 
 module "secondary_eventbridge_rule_us-west-1" {
-  source = "../../modules/secondary_event_rule"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/secondary_event_rule"
 
   providers = {
     aws = aws.us-west-1
@@ -156,7 +197,7 @@ provider "aws" {
 }
 
 module "secondary_eventbridge_rule_us-west-2" {
-  source = "../../modules/secondary_event_rule"
+  source = "github.com/corelight/terraform-aws-enrichment//modules/secondary_event_rule"
 
   providers = {
     aws = aws.us-west-2
