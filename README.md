@@ -1,4 +1,4 @@
-# terraform-aws-enrichment
+[#](#) terraform-aws-enrichment
 
 <img src="docs/overview.svg" alt="overview">
 
@@ -92,7 +92,9 @@ The variables for this module all have default values that can be overwritten
 to meet your naming and compliance standards. The only variables without defaults are
 the Lambda's ECR image name and tag which you will set during preparation.
 
-Deployment examples can be found [here](examples)
+Deployment examples can be found [here][].
+
+[here]: https://github.com/corelight/corelight-cloud/tree/main/terraform/aws-cloud-enrichment
 
 ## License
 
